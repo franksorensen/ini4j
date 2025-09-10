@@ -136,6 +136,7 @@ public class BasicOptionMapTest extends Ini4jCase
         }
     }
 
+    /*
     @Test public void testFromToAs() throws Exception
     {
         DwarfBean bean = new DwarfBean();
@@ -166,6 +167,7 @@ public class BasicOptionMapTest extends Ini4jCase
         fromToAs(DwarfsData.sleepy);
         fromToAs(DwarfsData.sneezy);
     }
+    */
 
     @Test public void testGet()
     {

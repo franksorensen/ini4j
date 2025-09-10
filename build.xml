@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+
+    Copyright 2005,2009 Ivan SZKIBA
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<!DOCTYPE project>
+<project name="ini4j" basedir="." default="ivypublish" 
+						xmlns:mvn="antlib:org.apache.maven.resolver.ant"
+						xmlns:ivy="antlib:org.apache.ivy.ant">
+
+	<property name="lib.home" value="${basedir}/lib" />
+	
+	<path id="ivyjars">
+		<fileset dir="${lib.home}" >
+			<include name="*.jar" />
+		</fileset>
+	</path>	
+	
+	
+	<target name="ivyresolve" description="">
+		<property file="../ivysetup/ivyproperties.properties" />
+		<ivy:settings file="../ivysetup/ivysettings.xml" />
+		<ivy:resolve file="../maven2ivy/ivy.xml" />
+	</target>
+
+	<target name="ivyretrieve" description="" depends="ivyresolve">
+		<ivy:retrieve sync="true" type="jar,bundle" />
+	</target>
+	
+
+	<target name="ivypublish">
+
+		<taskdef uri="antlib:org.apache.maven.resolver.ant" resource="org/apache/maven/resolver/ant/antlib.xml"
+			classpathref="ivyjars" />
+		
+		<echo message="--- getting dependencies from maven pom.xml ---" />
+
+		<mvn:pom file="${basedir}/pom.xml" id="pominfo"></mvn:pom>
+
+		<echo>${pominfo.version}</echo>
+		
+		<property file="../ivysetup/ivyproperties.properties" />
+		<ivy:settings file="../ivysetup/ivysettings.xml" />
+
+		<ivy:resolve file="${basedir}/ivy.xml" />
+		<ivy:publish pubrevision="${pominfo.version}" status="release" resolver="shared" overwrite="true" >
+			<artifacts pattern="${basedir}/target/[artifact]-[revision].[ext]"/>
+		</ivy:publish>	
+	</target>
+	
+	
+</project>
